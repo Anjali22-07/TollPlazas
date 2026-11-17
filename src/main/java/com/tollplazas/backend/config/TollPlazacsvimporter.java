@@ -28,6 +28,7 @@ public class TollPlazacsvimporter implements CommandLineRunner{
     public void run(String... args) throws Exception {
         if(tollplazaRepo.count()>0){
             System.out.println("Toll Plaza data already exists");
+            return;
         }
 
         ClassPathResource resource =
