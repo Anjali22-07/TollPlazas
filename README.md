@@ -14,7 +14,7 @@ A Spring Boot REST API that identifies toll plazas located along a road route be
 **API Endpoint:**
 
 ```http
-POST ](https://tollplazas.onrender.com/api/v1/toll-plaza)
+POST [](https://tollplazas.onrender.com/api/v1/toll-plaza)
 ```
 
 **Example Request:**
