@@ -9,12 +9,12 @@ A Spring Boot REST API that identifies toll plazas located along a road route be
 
 ## Live Deployment
 
-**Base URL:** [](https://tollplazas.onrender.com)
+**Base URL:** [Toll_PlazaLocater](https://tollplazas.onrender.com)
 
 **API Endpoint:**
 
 ```http
-POST [](https://tollplazas.onrender.com/api/v1/toll-plaza)
+POST [API endpoint](https://tollplazas.onrender.com/api/v1/toll-plaza)
 ```
 
 **Example Request:**
