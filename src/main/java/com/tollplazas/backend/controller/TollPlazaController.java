@@ -12,6 +12,7 @@ import com.tollplazas.backend.dto.TollRequest;
 import com.tollplazas.backend.dto.TollResponse;
 import com.tollplazas.backend.services.Implementation.TollPlazaServiceImplementation;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController 
@@ -22,7 +23,7 @@ public class TollPlazaController {
     private final TollPlazaServiceImplementation tollPlazaService;
 
     @PostMapping("/toll-plaza")
-    public ResponseEntity<TollResponse> tollPlazaRequest(@RequestBody TollRequest tollRequest){
+    public ResponseEntity<TollResponse> tollPlazaRequest(@Valid  @RequestBody TollRequest tollRequest){
 
          return ResponseEntity.status(HttpStatus.OK).body(tollPlazaService.findBetween(tollRequest));
     }

@@ -11,6 +11,7 @@ import com.tollplazas.backend.dto.TollPlazaDto;
 import com.tollplazas.backend.dto.TollRequest;
 import com.tollplazas.backend.dto.TollResponse;
 import com.tollplazas.backend.entity.TollPlaza;
+import com.tollplazas.backend.exceptions.BadRequestException;
 import com.tollplazas.backend.repository.TollPlazaRepository;
 import com.tollplazas.backend.services.TollPlazaServices;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class TollPlazaServiceImplementation implements TollPlazaServices {
             throw new IllegalArgumentException("Invalid source or destination pincode");
         }
         if (source.equals(destination)) {
-            throw new IllegalArgumentException("Source and destination pincodes cannot be the same");
+        throw new BadRequestException("Source and destination pincodes cannot be the same");
         }
 
         //first convert the pincode to coordinates
@@ -86,9 +87,7 @@ public class TollPlazaServiceImplementation implements TollPlazaServices {
                 }
             }
 
-            if (nearestKm > MAX_DISTANCE_FROM_ROUTE_KM && nearestKm <= 10) {
-    System.out.println("NEAR MISS: " + plaza.getTollName() + " is " + round(nearestKm) + " km from the route");
-}
+
     // keep the plaza only if it is within 500 m of the route
             if (nearestKm <= MAX_DISTANCE_FROM_ROUTE_KM) {
                 double alongRouteKm = cumulativeKm[nearestIndex] * scale;
