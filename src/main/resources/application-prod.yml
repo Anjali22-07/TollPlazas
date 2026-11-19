@@ -1,0 +1,14 @@
+server:
+  port: ${PORT:8080}
+
+ors:
+  api:
+    key: ${ORS_API_KEY}
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    hikari:
+      maximum-pool-size: 5
