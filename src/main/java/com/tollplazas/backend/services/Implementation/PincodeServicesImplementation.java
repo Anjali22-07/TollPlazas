@@ -1,0 +1,45 @@
+package com.tollplazas.backend.services.Implementation;
+
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
+
+import com.tollplazas.backend.services.PincodeServices;
+
+import tools.jackson.databind.JsonNode;
+
+@Service
+public class PincodeServicesImplementation implements PincodeServices {
+
+    private final RestClient restClient = RestClient.builder()
+            .baseUrl("https://nominatim.openstreetmap.org")
+            .defaultHeader("User-Agent", "TollPlazasAssignment/1.0")   // required, otherwise Nominatim blocks you
+            .build();
+
+    @Override
+    @Cacheable("pincodes")
+    public double[] getCoordinates(String pincode) {
+        try {
+            JsonNode result = restClient.get()
+                    .uri(uri -> uri.path("/search")
+                            .queryParam("postalcode", pincode)
+                            .queryParam("country", "India")
+                            .queryParam("format", "json")
+                            .queryParam("limit", 1)
+                            .build())
+                    .retrieve()
+                    .body(JsonNode.class);
+
+            if (result == null || result.isEmpty()) {
+                throw new IllegalArgumentException("Invalid source or destination pincode");
+            }
+
+            double lat = result.get(0).path("lat").asDouble();   // Nominatim sends these as strings
+            double lon = result.get(0).path("lon").asDouble();
+            return new double[]{lon, lat};
+        } catch (RestClientResponseException e) {
+            throw new IllegalArgumentException("Invalid source or destination pincode");
+        }
+    }
+}

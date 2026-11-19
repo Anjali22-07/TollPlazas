@@ -1,16 +1,12 @@
 package com.tollplazas.backend.services.Implementation;
 
-import java.net.http.HttpHeaders;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-
 import com.tollplazas.backend.services.RouteServices;
-
-import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import tools.jackson.databind.JsonNode;
 
 @Service 
@@ -27,6 +23,7 @@ public class RouteServiceImplementation implements RouteServices{
     }
 
     @Override
+    @Cacheable("routes")
     public JsonNode getRoute(double sourceLongitude, double sourceLatitude, double destinationLongitude,
             double destinationLatitude) {
 
