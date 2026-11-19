@@ -5,7 +5,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestClientResponseException;
 import com.tollplazas.backend.exceptions.BadRequestException;
 import com.tollplazas.backend.exceptions.ExternalServiceException;
 import com.tollplazas.backend.services.PincodeServices;
@@ -15,10 +14,14 @@ import tools.jackson.databind.JsonNode;
 @Service
 public class PincodeServicesImplementation implements PincodeServices {
 
-    private final RestClient restClient = RestClient.builder()
-            .baseUrl("https://nominatim.openstreetmap.org")
-            .defaultHeader("User-Agent", "TollPlazasAssignment/1.0")   // required, otherwise Nominatim blocks you
-            .build();
+     private final RestClient restClient;
+
+    public PincodeServicesImplementation(RestClient.Builder builder) {
+        this.restClient = builder
+                .baseUrl("https://nominatim.openstreetmap.org")
+                .defaultHeader("User-Agent", "TollPlazasAssignment/1.0")
+                .build();
+    }
 
     @Override
     @Cacheable("pincodes")

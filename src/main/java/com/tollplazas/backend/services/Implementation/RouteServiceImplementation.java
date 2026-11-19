@@ -19,13 +19,13 @@ public class RouteServiceImplementation implements RouteServices{
 
     private final RestClient restClient;       //communicates with the external API.
 
-    public RouteServiceImplementation(@Value("${ors.api.key}") String apiKey){
-             this.restClient= RestClient.builder()
-                             .baseUrl("https://api.openrouteservice.org")
-                            .defaultHeader("Authorization",apiKey)      //attaches your API key to requests.
-                            .build();
-                              
-    }
+        public RouteServiceImplementation(RestClient.Builder builder,
+                                        @Value("${ors.api.key}") String apiKey) {
+            this.restClient = builder
+                    .baseUrl("https://api.openrouteservice.org")
+                    .defaultHeader("Authorization", apiKey)
+                    .build();
+        }
 
     @Override
     @Cacheable("routes")

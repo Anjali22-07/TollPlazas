@@ -2,7 +2,9 @@ package com.tollplazas.backend.services.Implementation;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ import com.tollplazas.backend.dto.TollResponse;
 import com.tollplazas.backend.entity.TollPlaza;
 import com.tollplazas.backend.exceptions.BadRequestException;
 import com.tollplazas.backend.repository.TollPlazaRepository;
+import com.tollplazas.backend.services.PincodeServices;
+import com.tollplazas.backend.services.RouteServices;
 import com.tollplazas.backend.services.TollPlazaServices;
 import lombok.RequiredArgsConstructor;
 import tools.jackson.databind.JsonNode;
@@ -24,8 +28,8 @@ public class TollPlazaServiceImplementation implements TollPlazaServices {
      private static final double MAX_DISTANCE_FROM_ROUTE_KM = 0.5;   // 500 metres
 
 
-    private final PincodeServicesImplementation pincodeServices;
-    private final RouteServiceImplementation routeServices;
+    private final PincodeServices pincodeServices;
+    private final RouteServices routeServices;
     private final TollPlazaRepository tollplazaRepo;
 
     @Override
@@ -36,7 +40,7 @@ public class TollPlazaServiceImplementation implements TollPlazaServices {
 
         // 0. validate input
         if (!isValid(source) || !isValid(destination)) {
-            throw new IllegalArgumentException("Invalid source or destination pincode");
+            throw new BadRequestException("Invalid source or destination pincode");
         }
         if (source.equals(destination)) {
         throw new BadRequestException("Source and destination pincodes cannot be the same");
@@ -71,7 +75,8 @@ public class TollPlazaServiceImplementation implements TollPlazaServices {
 
         double total = cumulativeKm[n - 1];
         double scale = total > 0 ? distanceInKm / total : 1;
-
+ 
+         Set<String> seen= new HashSet<>();
         List<TollPlazaDto> tollPlazas = new ArrayList<>();
         for (TollPlaza plaza : tollplazaRepo.findAll()) {
 
@@ -87,9 +92,13 @@ public class TollPlazaServiceImplementation implements TollPlazaServices {
                 }
             }
 
-
+         
+            
+            String key = plaza.getTollName() + "|" + plaza.getLatitude() + "|" + plaza.getLongitude();
+ 
+     
     // keep the plaza only if it is within 500 m of the route
-            if (nearestKm <= MAX_DISTANCE_FROM_ROUTE_KM) {
+            if (nearestKm <= MAX_DISTANCE_FROM_ROUTE_KM && seen.add(key)) {
                 double alongRouteKm = cumulativeKm[nearestIndex] * scale;
                 tollPlazas.add(new TollPlazaDto(
                     plaza.getTollName(), plaza.getLatitude(), plaza.getLongitude(), round(alongRouteKm)));
